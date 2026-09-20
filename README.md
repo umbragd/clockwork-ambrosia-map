@@ -25,7 +25,7 @@ An unofficial interactive world map with material lookup, collectible tracking, 
 
 ## 数据与限制
 
-底图根据游戏房间数据独立重绘。收集清单与部分参考坐标参考了 `CLOCKWORK AMBROSIA — COORDINATES FOR COLLECTING STUFF` 工作簿；素材掉落与固定拾取物来源依据游戏配置解析。参考指南：https://steamcommunity.com/sharedfiles/filedetails/?id=3753198193 。
+底图根据游戏房间数据独立重绘。收集清单与部分参考坐标参考了 `CLOCKWORK AMBROSIA — COORDINATES FOR COLLECTING STUFF` 工作簿；素材掉落与固定拾取物来源依据游戏配置解析。刷取素材地点参考了社区指南：https://steamcommunity.com/sharedfiles/filedetails/?id=3753198193 ，但根据规则进行了重新计算。
 
 素材收集地点优先级为传送点 > 存档点 > Borersville大本营，方便进出房间刷怪，但不一定是最好的刷素材点；所有素材的第一个来源均核实有效，能够重复进行刷取，计算距离时假设玩家已获得全部能力，只剩下刷素材。计算时，静态地形参与寻路，但动态机关、单向门、剧情状态比如水位与实际通行规则仍可能影响结果。存档分析结果适用于Steam版本号v1.0.5，游戏更新后可能需要重新核对。已标注的实测结论仅覆盖相应来源与点位。
 
