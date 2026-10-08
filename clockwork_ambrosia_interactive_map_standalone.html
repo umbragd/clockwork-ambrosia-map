@@ -394,6 +394,7 @@ function parseGameSave(buffer) {
   const listCount=()=>{if(u16()!==8)throw Error('不支持的背包格式');return count(i32());};
   if(bytes.length>16*1024*1024||decoder.decode(bytes.subarray(0,8))!=='RFile 3\n')throw Error('请选择 Clockwork Ambrosia 的 .sav 存档');
   const meta=[number(),number(),string(),number(),string(),number()];
+  if(![31,32].includes(meta[1]))throw Error('不支持的存档版本：'+meta[1]);
   for(let n=count(meta[5]);n--;){const size=count(i32(),100000);need(size);decoder.decode(bytes.subarray(p,p+size));p+=size;}
   const globals=Object.create(null),strings=Object.create(null),mods=Object.create(null),components=Object.create(null);
   for(let n=count(number());n--;){const k=string();globals[k]=number();}
@@ -402,7 +403,9 @@ function parseGameSave(buffer) {
   const equipmentList=()=>{const result=Object.create(null);for(let n=listCount();n--;){const name=string(),status=short(),flag=boolean(),upgradeCounter=number();result[name]={status,flag,upgradeCounter,upgraded:upgradeCounter>0};}return result;};
   const relics=equipmentList(),equipment=equipmentList(),items=[];
   for(let n=listCount();n--;)items.push({name:string(),level:short(),flag:boolean()});
-  for(let n=count(number());n--;){const k=string(),v=number();if(v<0)throw Error('素材库存异常');components[k]=v;}
+  // v32 adds one tagged integer per material; its meaning remains unverified.
+  const componentExtra=Object.create(null);
+  for(let n=count(number());n--;){const k=string(),v=number();if(v<0)throw Error('素材库存异常');components[k]=v;if(meta[1]===32)componentExtra[k]=number();}
   for(let n=count(number());n--;)string();
   const grids=[];
   for(let start=p;start+18+7500*21<=bytes.length;start++) {
@@ -416,7 +419,7 @@ function parseGameSave(buffer) {
     if(valid)grids.push({mapOffset:start+18,mapCells:cells});
   }
   if(grids.length!==1)throw Error('无法唯一识别探索地图，未应用此存档');
-  return {meta,globals,strings,mods,relics,equipment,items,components,...grids[0]};
+  return {meta,globals,strings,mods,relics,equipment,items,components,componentExtra,...grids[0]};
 }
 
 let loadedSave=null;
